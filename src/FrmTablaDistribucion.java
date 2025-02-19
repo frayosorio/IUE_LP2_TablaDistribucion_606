@@ -19,10 +19,11 @@ public class FrmTablaDistribucion extends JFrame {
     JList lstMuestra;
     JTable tblTablaDistribucion;
     String[] opciones = new String[] { "Excelente", "Buena", "Regular", "Mala" };
-    String[] encabezados=new String[] { "Variable", "Frecuencia absoluta (f)", "Frecuencia acumulada (F)", "Frecuencia relativa (fr)", "Frecuencia porcentual (%f)"};
+    String[] encabezados = new String[] { "Variable", "Frecuencia absoluta (f)", "Frecuencia acumulada (F)",
+            "Frecuencia relativa (fr)", "Frecuencia porcentual (%f)" };
 
     public FrmTablaDistribucion() {
-        setSize(400, 300);
+        setSize(600, 500);
         setTitle("Tabla deDistribución");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -65,7 +66,12 @@ public class FrmTablaDistribucion extends JFrame {
 
         DefaultTableModel dtm = new DefaultTableModel(null, encabezados);
         tblTablaDistribucion.setModel(dtm);
-        
+
+        btnAgregar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                agregarDato();
+            }
+        });
 
         btnQuitar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -85,12 +91,10 @@ public class FrmTablaDistribucion extends JFrame {
     private int totalDatos = -1;
 
     private void agregarDato() {
-
-            String respuesta = opciones[cmbRespuesta.getSelectedIndex()];
-            totalDatos++;
-            muestra[totalDatos] = respuesta;
-            mostrarMuestra();
-
+        String respuesta = opciones[cmbRespuesta.getSelectedIndex()];
+        totalDatos++;
+        muestra[totalDatos] = respuesta;
+        mostrarMuestra();
     }
 
     private void mostrarMuestra() {
@@ -115,8 +119,32 @@ public class FrmTablaDistribucion extends JFrame {
             JOptionPane.showMessageDialog(null, "Debe seleccionar una posición");
         }
     }
+ 
 
-    private void calcularTablaDistribucion(){
+    private void calcularTablaDistribucion() {
+        double[][] tablaDistribucion = new double[opciones.length][4];
+        //calcular la frecuencia absoluta
+        for (int i = 0; i <= totalDatos; i++) {
+            // buscar la fila de la variable
+            int posicionVariable = -1;
+            for (int j = 0; j < opciones.length; j++) {
+                if (muestra[i] == opciones[j]) {
+                    posicionVariable = j;
+                    break;
+                }
+            }
+            tablaDistribucion[posicionVariable][0]++;
+        }
 
+        //mostrar la tabla de distribucion
+        String[][] strTablaDistribucion=new String[opciones.length][5];
+        for(int i=0;i<opciones.length;i++){
+            strTablaDistribucion[i][0]=opciones[i];
+            strTablaDistribucion[i][1]=String.valueOf(tablaDistribucion[i][0]);
+            strTablaDistribucion[i][2]=String.valueOf(tablaDistribucion[i][1]);
+        }
+
+        DefaultTableModel dtm = new DefaultTableModel(strTablaDistribucion, encabezados);
+        tblTablaDistribucion.setModel(dtm);
     }
 }
