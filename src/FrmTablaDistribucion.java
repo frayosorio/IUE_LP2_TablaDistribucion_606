@@ -119,11 +119,10 @@ public class FrmTablaDistribucion extends JFrame {
             JOptionPane.showMessageDialog(null, "Debe seleccionar una posición");
         }
     }
- 
 
     private void calcularTablaDistribucion() {
         double[][] tablaDistribucion = new double[opciones.length][4];
-        //calcular la frecuencia absoluta
+        // calcular la frecuencia absoluta
         for (int i = 0; i <= totalDatos; i++) {
             // buscar la fila de la variable
             int posicionVariable = -1;
@@ -136,12 +135,22 @@ public class FrmTablaDistribucion extends JFrame {
             tablaDistribucion[posicionVariable][0]++;
         }
 
-        //mostrar la tabla de distribucion
-        String[][] strTablaDistribucion=new String[opciones.length][5];
-        for(int i=0;i<opciones.length;i++){
-            strTablaDistribucion[i][0]=opciones[i];
-            strTablaDistribucion[i][1]=String.valueOf(tablaDistribucion[i][0]);
-            strTablaDistribucion[i][2]=String.valueOf(tablaDistribucion[i][1]);
+        // calcular la frecuencia acumulada
+        tablaDistribucion[0][1] = tablaDistribucion[0][0];
+        for (int i = 1; i < opciones.length; i++) {
+            tablaDistribucion[i][1] = tablaDistribucion[i - 1][1] + tablaDistribucion[i][0];
+        }
+
+        // mostrar la tabla de distribucion
+        String[][] strTablaDistribucion = new String[opciones.length][5];
+        for (int i = 0; i < opciones.length; i++) {
+            tablaDistribucion[i][2] = tablaDistribucion[i][0] / (totalDatos + 1);
+            tablaDistribucion[i][3] = tablaDistribucion[i][2] * 100;
+            strTablaDistribucion[i][0] = opciones[i];
+            strTablaDistribucion[i][1] = String.valueOf(tablaDistribucion[i][0]);
+            strTablaDistribucion[i][2] = String.valueOf(tablaDistribucion[i][1]);
+            strTablaDistribucion[i][3] = String.valueOf(tablaDistribucion[i][2]);
+            strTablaDistribucion[i][4] = String.valueOf(tablaDistribucion[i][3]);
         }
 
         DefaultTableModel dtm = new DefaultTableModel(strTablaDistribucion, encabezados);
